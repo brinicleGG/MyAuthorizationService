@@ -1,0 +1,55 @@
+openapi: 3.0.1
+info:
+  title: API Authorization Service
+  version: v1.0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /api/logout:
+    post:
+      tags:
+        - authorization-controller
+      operationId: logout
+      responses:
+        '200':
+          description: OK
+  /api/login:
+    post:
+      tags:
+        - authorization-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DtoAuthenticationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/success:
+    get:
+      tags:
+        - authorization-controller
+      operationId: getSuccessPage
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    DtoAuthenticationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
