@@ -1,5 +1,7 @@
 package ru.brinicle.myauthorizationservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,33 +38,33 @@ public class AuthorizationController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    //TODO: 1) Docker 2) flyway 3) swagger 4) config 5) app.yaml за контейнер
+    //TODO: 1) Docker 4) config 5) app.yaml за контейнер
 
-    @PostMapping("/login") //TODO должен кидать Exception
-    public ResponseEntity login(@RequestBody DtoAuthenticationRequest request) {
-        try {
+    @PostMapping("/login")
+    @Operation(summary = "Login", description = "Login to the system")
+    @ApiResponse(responseCode = "200", description = "Successful login")
+    public ResponseEntity<DtoAuthenticationResponse> login(@RequestBody DtoAuthenticationRequest request) {
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-            User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
 
-            String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
+        String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
 
-            DtoAuthenticationResponse response = new DtoAuthenticationResponse();
-            response.setEmail(request.getEmail());
-            response.setToken(token);
+        DtoAuthenticationResponse response = new DtoAuthenticationResponse();
+        response.setEmail(request.getEmail());
+        response.setToken(token);
 
-            return ResponseEntity.ok().body(response);
-
-        } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Invalid email/password combination", HttpStatus.FORBIDDEN);
-        }
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Logout from the system")
+    @ApiResponse(responseCode = "200", description = "Successful logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
+
         var securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
     }
