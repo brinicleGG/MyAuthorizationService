@@ -2,11 +2,9 @@ package ru.brinicle.myauthorizationservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,8 +35,6 @@ public class AuthorizationController {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
-    //TODO: 1) Docker 4) config 5) app.yaml за контейнер
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Login to the system")
